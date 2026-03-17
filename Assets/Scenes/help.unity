@@ -367,7 +367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30fbebf62c09e7242b44c69b9e9d7d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  gooseBody: {fileID: 0}
+  gooseBody: {fileID: 1503655536}
 --- !u!136 &528532505
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5326,7 +5326,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1503655535}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f43873e65355f0f47a0c8d54eae11b01, type: 3}
   m_Name: 
@@ -5341,7 +5341,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1503655535}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 10

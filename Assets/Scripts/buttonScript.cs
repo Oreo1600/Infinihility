@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class buttonScript : MonoBehaviour
 {
@@ -15,10 +16,18 @@ public class buttonScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((gooseFreed == false) && (Input.GetKey(KeyCode.E)))
-        {
-            gooseBody.useGravity = true;
+        if ((gooseFreed == false) && (Input.GetKey(KeyCode.E))) 
+        { 
+            //print("E");
+            //gooseBody.useGravity = true;
             gooseFreed = true;
+            gooseBody.GetComponent<Rigidbody>().useGravity = true;
+
+            //yield return new WaitForSeconds(3);
+
+            gooseBody.GetComponent<NavMeshAgent>().enabled = true;
+            gooseBody.GetComponent<GooseMovementScript>().enabled = true;
+            this.enabled = false;
         }
 
         //if (Input.GetMouseButtonDown(0))
