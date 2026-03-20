@@ -79,7 +79,6 @@ public class Movement : MonoBehaviour
         Physics.Raycast(groundCheck.position, Vector3.down, out hit, groundDistance + 3f, groundMask);
         
         float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
-        Debug.Log("Slope Angle: " + slopeAngle);
         if (slopeAngle > controller.slopeLimit) isOnSlope = true;
         else isOnSlope = false;
 
