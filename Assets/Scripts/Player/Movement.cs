@@ -37,6 +37,10 @@ public class Movement : MonoBehaviour
     [SerializeField] float jumpHeight = 1.5f;
     [SerializeField] float initialCameraFOV;
     [SerializeField] bool isRunning;
+    [SerializeField] float airTime;
+    [SerializeField] float slideSpeed = 5f;
+    bool justLanded;
+    bool isOnSlope;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -70,17 +74,36 @@ public class Movement : MonoBehaviour
     }
     void HandleGravity()
     {
-        if (!Physics.Raycast(groundCheck.position, Vector3.down, groundDistance,groundMask))
+        RaycastHit hit;
+        
+        Physics.Raycast(groundCheck.position, Vector3.down, out hit, groundDistance + 3f, groundMask);
+        
+        float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+        Debug.Log("Slope Angle: " + slopeAngle);
+        if (slopeAngle > controller.slopeLimit) isOnSlope = true;
+        else isOnSlope = false;
+
+        if (Physics.Raycast(groundCheck.position, Vector3.down, groundDistance, groundMask))
         {
-            isGrounded = false;
+            if (!isGrounded) animator.ResetTrigger("startedFalling");
+            isGrounded = true;
+            if (!justLanded) {  Landed(); justLanded = true;  }
         }
         else
         {
-            isGrounded = true;
+            if (isGrounded) animator.SetTrigger("startedFalling");
+            isGrounded = false;
+            airTime += Time.deltaTime;
+            justLanded = false;
         }
         animator.SetBool("Grounded", isGrounded);
         animator.SetBool("Falling", !isGrounded); 
-        if (!isGrounded)
+        if (!isGrounded && isOnSlope)
+        {
+            Vector3 slideDir = Vector3.ProjectOnPlane(Vector3.down, hit.normal);
+            controller.Move(slideDir * slideSpeed * Time.deltaTime);
+        }
+        else if (!isGrounded)
         {
             velocity.y += Physics.gravity.y * Time.deltaTime;
         }
@@ -88,7 +111,6 @@ public class Movement : MonoBehaviour
         {
             velocity.y = -0.2f;
         }
-        animator.SetFloat("Z_Velocity", velocity.y);
         controller.Move(velocity * Time.deltaTime);
     }
     void HandleMovement()
@@ -143,5 +165,12 @@ public class Movement : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -90f, 65f);
         playerCamera.position = cameraRoot.position;
         playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+    }
+
+    void Landed()
+    {
+        animator.SetFloat("airTime", airTime);
+        airTime = 0;
+        justLanded = true;
     }
 }
