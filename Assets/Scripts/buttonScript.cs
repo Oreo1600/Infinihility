@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class buttonScript : MonoBehaviour
 {
     public Rigidbody gooseBody;
-    [SerializeField] bool gooseFreed = false;
+    bool gooseFreed = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,9 +16,9 @@ public class buttonScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((gooseFreed == false) && (Input.GetKeyDown(KeyCode.E))) 
-        {
-            Debug.Log("E");
+        if ((gooseFreed == false) && (Input.GetKey(KeyCode.E))) 
+        { 
+            //print("E");
             //gooseBody.useGravity = true;
             gooseFreed = true;
             gooseBody.GetComponent<Rigidbody>().useGravity = true;
