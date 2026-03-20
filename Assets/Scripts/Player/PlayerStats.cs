@@ -7,7 +7,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] float currentHealth;
     void Start()
     {
-        currentHealth = 100f;
+        currentHealth = maxHealth;
     }
 
 }

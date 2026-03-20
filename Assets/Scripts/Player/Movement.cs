@@ -38,7 +38,9 @@ public class Movement : MonoBehaviour
     [SerializeField] float initialCameraFOV;
     [SerializeField] bool isRunning;
     [SerializeField] float airTime;
+    [SerializeField] float slideSpeed = 5f;
     bool justLanded;
+    bool isOnSlope;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -72,24 +74,36 @@ public class Movement : MonoBehaviour
     }
     void HandleGravity()
     {
-        if (!Physics.Raycast(groundCheck.position, Vector3.down, groundDistance,groundMask))
+        RaycastHit hit;
+        
+        Physics.Raycast(groundCheck.position, Vector3.down, out hit, groundDistance + 3f, groundMask);
+        
+        float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+        Debug.Log("Slope Angle: " + slopeAngle);
+        if (slopeAngle > controller.slopeLimit) isOnSlope = true;
+        else isOnSlope = false;
+
+        if (Physics.Raycast(groundCheck.position, Vector3.down, groundDistance, groundMask))
         {
+            if (!isGrounded) animator.ResetTrigger("startedFalling");
+            isGrounded = true;
+            if (!justLanded) {  Landed(); justLanded = true;  }
+        }
+        else
+        {
+            if (isGrounded) animator.SetTrigger("startedFalling");
             isGrounded = false;
             airTime += Time.deltaTime;
             justLanded = false;
         }
-        else
-        {
-            isGrounded = true;
-            if (!justLanded)
-            {
-                Landed();
-                justLanded = true;
-            }
-        }
         animator.SetBool("Grounded", isGrounded);
         animator.SetBool("Falling", !isGrounded); 
-        if (!isGrounded)
+        if (!isGrounded && isOnSlope)
+        {
+            Vector3 slideDir = Vector3.ProjectOnPlane(Vector3.down, hit.normal);
+            controller.Move(slideDir * slideSpeed * Time.deltaTime);
+        }
+        else if (!isGrounded)
         {
             velocity.y += Physics.gravity.y * Time.deltaTime;
         }
